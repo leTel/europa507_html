@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Découvrez Europa 507 un JDR papier historique qui prend place en Europe centrale au moyen âge.">
+    <meta name="author" content="Laurent Lugon Moulin">
+
+    <title>Europa 507, le JDR historique</title>
+
+    <link rel="icon" href="../img/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="fonts/europa_flaticon.css">
+    <link rel="stylesheet" href="css/default_doc.css" />
+  </head>
+  <body data-spy="scroll" data-offset="70" data-target="#side-menu">
+    <!-- Wrap all page content here -->
+    <div id="wrap">
+    
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Europa507.html"><img class="logo" src="img/logo_white.png" /></a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li id="nav-document">
+              <a class="top-menu-link" href="#" data-intro="" data-html="html/document.html"><span class="glyphicon glyphicon-book"></span> Documents</a>
+            </li>
+            <li id="nav-event-calendar">
+              <a class="top-menu-link" href="#" data-intro="" data-html="html/event_calendar.html"><span class="glyphicon glyphicon-indent-left"></span> Calendrier des évènements</a>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+        </div>
+      </div>
+      
+      <!-- Begin page content -->
+      <div class="page-header">
+        <div class="container">
+          <div class="row" id="page-title">
+            <div class="col-xs-12">
+              <img src="img/logo_white.png" />
+            </div>
+          </div>
+          <div class="row" id="page-intro">
+            <div class="col-xs-12">
+              Découvrez Europa 507 un JDR papier historique qui prend place en Europe centrale au moyen âge.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container" id="page-container">
+      </div>
+    </div> <!--/.warp -->
+
+    <div id="footer">
+      <div class="container">
+        <p class="credit">Europa 507 - @2015-2017 Laurent Lugon Moulin</p>
+      </div>
+    </div>
+
+
+    <!-- SCRIPT -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.top-menu-link').on('click', function(){
+          $(this).parents('li').addClass('active')
+          $('#page-title').html($(this).html())
+          $('#page-intro').text($(this).data('intro'))
+          $('#page-container').load($(this).data('html'), init_document_list)
+        })
+
+        init_document_list = function(){
+          $('.document-link').on('click', function(){
+            $('#document-container').load($(this).data('html'), init_document)
+          })
+        }
+
+        init_document = function(){
+          var includes = $('[data-include]')
+          $.each(includes, function(){
+            $(this).load($(this).data('include'), function(){
+              $('#side-menu').affix({
+                offset: {
+                  top: 255,
+                  bottom: function () {
+                    return (this.bottom = $('.footer').outerHeight(true))
+                  }
+                }
+              })
+
+              $('.document figure a').on('click', function(){
+                $('#modal-title').text($(this).attr('data-title'))
+                $('#modal-author').text($(this).attr('data-author'))
+                $('#modal-licence').text($(this).attr('data-licence'))
+                $('#modal-link').attr('href', $(this).attr('data-link'))
+                $('#image-modal img').attr('src', $(this).children('img').attr('src'))
+                $('#image-modal').modal()
+              })
+
+              $('a.goto').on('click', function(){
+                // TODO Does not link event to sidemenu
+                var target = $(this).attr('href')
+                target = target.substring(1,target.length)
+                var offset = $('#'+target).offset().top - 60
+                $(window).scrollTop(offset)
+                return false
+              })
+
+              $('.document h1, .document h2').each(function(){
+                var id = $(this).attr('id')
+                var title =  $(this).text()
+
+                if($(this)[0].tagName == 'H2'){
+                  $('#side-menu > ul > li:last-child > ul').append('<li><a class="goto" href="#'+id+'">'+title+'</a></li>')
+                }else{
+                  $('#side-menu > ul').append('<li><a class="goto" href="#'+id+'">'+title+'</a><ul class="nav nav-stacked"></ul></li>')
+                }
+              })
+            })
+          })
+        }
+
+        /* 
+        // Not Tested
+        $('.document.timeline .event a').on('click', function(){
+            var event_div = $(this).parents('.event');
+            var description = event_div.find('.description');
+            var title = event_div.find('.title');
+
+            if(description.is(':visible')){
+                description.slideUp();
+                title.find('span.glyphicon-menu-up').removeClass('glyphicon-menu-up').addClass('glyphicon-menu-down');
+            }else{
+                description.slideDown();
+                title.find('span.glyphicon-menu-down').removeClass('glyphicon-menu-down').addClass('glyphicon-menu-up');
+            }
+        });
+        */
+      })
+    </script>
+  </body>
+</html>
